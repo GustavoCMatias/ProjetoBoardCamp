@@ -1,6 +1,4 @@
-import joi from "joi"
 import { db } from "../database/database.connection.js"
-import { gameSchema } from "../schema/games.schema.js"
 
 
 export async function inserirJogos(req, res){
