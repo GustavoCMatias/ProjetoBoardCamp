@@ -14,5 +14,13 @@ export async function inserirJogos(req, res){
     }catch(err){
         res.status(500).send(err.message)
     }
+}
 
+export async function listarJogos(_, res){
+    try{
+        const {rows} = await db.query('SELECT * FROM games')
+        res.send(rows)
+    }catch(err){
+        res.status(500).send(err.message)
+    }
 }

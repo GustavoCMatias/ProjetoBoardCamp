@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { inserirJogos } from "../controller/games.controller.js";
+import { inserirJogos, listarJogos } from "../controller/games.controller.js";
 import { validarSchema } from "../middleware/validateSchema.midleware.js";
 import { gameSchema } from "../schema/games.schema.js";
 
 
-const router = Router()
+const gameRouter = Router()
 
-router.post("/games", validarSchema(gameSchema), inserirJogos)
+gameRouter.post("/games", validarSchema(gameSchema), inserirJogos)
+gameRouter.get("/games", listarJogos)
 
-
-export default router
+export default gameRouter
