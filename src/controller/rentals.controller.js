@@ -22,7 +22,7 @@ export async function inserirAluguel(req, res){
 export async function listarAlugueis(_, res){
     try{
         const {rows} = await db.query('SELECT r.*, c.id AS cid, c.name AS cname, g.id AS gid, g.name AS gname FROM rentals as r JOIN customers AS c ON c.id = r."customerId" JOIN games AS g ON g.id = r."gameId"')
-        res.send(rows.map(item => ({... item, costumer:{id: item.cid, name: item.cname}, game:{id: item.gid, name: item.gname}, gname: undefined, gid:undefined, cname: undefined, cid: undefined})))
+        res.send(rows.map(item => ({... item, customer:{id: item.cid, name: item.cname}, game:{id: item.gid, name: item.gname}, gname: undefined, gid:undefined, cname: undefined, cid: undefined})))
     }catch(err){
         res.status(500).send(err.message)
     }
