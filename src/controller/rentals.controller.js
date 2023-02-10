@@ -8,7 +8,7 @@ export async function inserirAluguel(req, res){
         const {rowCount: rowsGames, rows} = await db.query("SELECT * FROM games WHERE id=$1", [gameId])
         if(rowsCustomer === 0 || rowsGames === 0) return res.sendStatus(400)
         const {stockTotal, pricePerDay} = rows[0]
-        const {rowCount: gamesRented} = await db.query('SELECT * FROM rentals WHERE "gameId"=$1', [gameId])   
+        const {rowCount: gamesRented} = await db.query('SELECT * FROM rentals WHERE "gameId"=$1 AND "returnDate" IS NULL', [gameId])   
         if(gamesRented>=stockTotal) return res.sendStatus(400)
 
         const rentDate = dayjs().format('YYYY-MM-DD')
