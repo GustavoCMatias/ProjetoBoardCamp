@@ -31,8 +31,6 @@ export async function listarClientes(req, res){
     }
 }
 
-// CONTINUAR DAQUI
-
 export async function atualizarClientes(req, res){
     const {name, phone, cpf, birthday} = req.body
     const {id} = req.params
