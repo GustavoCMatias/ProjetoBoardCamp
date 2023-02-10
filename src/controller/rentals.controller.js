@@ -29,3 +29,22 @@ export async function listarAlugueis(_, res){
         res.status(500).send(err.message)
     }
 }
+
+export async function finalizarAluguel(req, res){
+    const {id} = req.params
+    try{
+        const {rows, rowCount} = await db.query('SELECT * FROM rentals WHERE id=$1', [id])
+        if(rowCount === 0 || rows[0].returnDate)return res.sendStatus(404)
+
+        const returnDate = dayjs().format('YYYY-MM-DD')
+        const daysDiff = dayjs().diff(rows[0].rentDate, 'd')
+        const delayFee = daysDiff<=rows[0].daysRented?0:(daysDiff-rows[0].daysRented)*rows[0].originalPrice/rows[0].daysRented
+
+        await db.query('UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3', [returnDate, delayFee, id])
+        res.send()
+    }catch(err){
+        res.status(500).send(err.message)
+    }
+    
+    
+}
