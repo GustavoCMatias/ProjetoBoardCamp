@@ -1,14 +1,12 @@
 import dayjs from "dayjs"
 import { db } from "../database/database.connection.js"
 
-
 export async function inserirAluguel(req, res){
     try{
         const {customerId, gameId, daysRented} = req.body
         const {rowCount: rowsCustomer} = await db.query("SELECT * FROM customers WHERE id=$1", [customerId])
         const {rowCount: rowsGames, rows} = await db.query("SELECT * FROM games WHERE id=$1", [gameId])
         if(rowsCustomer === 0 || rowsGames === 0) return res.sendStatus(400)
-        console.log(rows)
         const {stockTotal, pricePerDay} = rows[0]
         const {rowCount: gamesRented} = await db.query('SELECT * FROM rentals WHERE "gameId"=$1', [gameId])   
         if(gamesRented>=stockTotal) return res.sendStatus(400)
@@ -34,7 +32,8 @@ export async function finalizarAluguel(req, res){
     const {id} = req.params
     try{
         const {rows, rowCount} = await db.query('SELECT * FROM rentals WHERE id=$1', [id])
-        if(rowCount === 0 || rows[0].returnDate)return res.sendStatus(404)
+        if(rowCount === 0)return res.sendStatus(404)
+        if(rows[0].returnDate)return res.sendStatus(400)
 
         const returnDate = dayjs().format('YYYY-MM-DD')
         const daysDiff = dayjs().diff(rows[0].rentDate, 'd')
@@ -47,4 +46,17 @@ export async function finalizarAluguel(req, res){
     }
     
     
+}
+
+export async function apagarAluguel(req, res){
+    const {id} = req.params
+    try{
+        const {rows, rowCount} = await db.query('SELECT * FROM rentals WHERE id=$1', [id])
+        if(rowCount === 0 )return res.sendStatus(404)
+        if(rows[0].returnDate) return res.sendStatus(400)
+        await db.query('DELETE FROM rentals WHERE id=$1', [id])
+        res.send()
+    }catch(err){
+        res.status(500).send(err.message)
+    }
 }
