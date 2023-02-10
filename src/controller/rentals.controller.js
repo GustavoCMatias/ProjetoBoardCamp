@@ -53,7 +53,7 @@ export async function apagarAluguel(req, res){
     try{
         const {rows, rowCount} = await db.query('SELECT * FROM rentals WHERE id=$1', [id])
         if(rowCount === 0 )return res.sendStatus(404)
-        if(rows[0].returnDate) return res.sendStatus(400)
+        if(rows[0].returnDate !== null) return res.sendStatus(400)
         await db.query('DELETE FROM rentals WHERE id=$1', [id])
         res.send()
     }catch(err){
